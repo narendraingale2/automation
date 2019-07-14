@@ -1,1 +1,0 @@
-{"rsync":{"/vagrant":{"type":"rsync","guestpath":"/vagrant","hostpath":"C:/Users/ningale/automation/vagrant-k8s","disabled":false,"__vagrantfile":true,"owner":"vagrant","group":"vagrant"}},"virtualbox":{"/srv/salt":{"guestpath":"/srv/salt","hostpath":"C:/Users/ningale/automation/vagrant-k8s/salt-stack/salt","disabled":false,"__vagrantfile":true}}}
