@@ -1,0 +1,33 @@
+Host kubemaster
+  HostName 127.0.0.1
+  User vagrant
+  Port 2222
+  UserKnownHostsFile /dev/null
+  StrictHostKeyChecking no
+  PasswordAuthentication no
+  IdentityFile /cygdrive/c/Users/ningale/automation/vagrant-k8s/.vagrant/machines/kubemaster/virtualbox/private_key
+  IdentitiesOnly yes
+  LogLevel FATAL
+
+Host kube1
+  HostName 127.0.0.1
+  User vagrant
+  Port 2200
+  UserKnownHostsFile /dev/null
+  StrictHostKeyChecking no
+  PasswordAuthentication no
+  IdentityFile /cygdrive/c/Users/ningale/automation/vagrant-k8s/.vagrant/machines/kube1/virtualbox/private_key
+  IdentitiesOnly yes
+  LogLevel FATAL
+
+Host kube2
+  HostName 127.0.0.1
+  User vagrant
+  Port 2201
+  UserKnownHostsFile /dev/null
+  StrictHostKeyChecking no
+  PasswordAuthentication no
+  IdentityFile /cygdrive/c/Users/ningale/automation/vagrant-k8s/.vagrant/machines/kube2/virtualbox/private_key
+  IdentitiesOnly yes
+  LogLevel FATAL
+

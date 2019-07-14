@@ -1,0 +1,80 @@
+Vagrant.configure("2") do |config|
+  swarmm_disk = 'E:\vagrant_disks\swarmm_disk.vdi'
+  swarmw01_disk = 'E:\vagrant_disks\swarmw01_disk.vdi'
+  swarmw02_disk = 'E:\vagrant_disks\swarmw02_disk.vdi'
+  
+  config.vm.define :swarmm do |swarmm|
+    swarmm.vm.network "private_network", ip: "192.168.100.104", virtualbox__intnet: true
+    swarmm.vm.box = "centos/7"
+    swarmm.vm.hostname = 'swarmm'
+    swarmm.vm.synced_folder './salt-stack/salt', '/srv/salt'
+    swarmm.vm.synced_folder './salt-stack/pillar', '/srv/pillar'
+    swarmm.vm.provider "virtualbox" do |vb|
+      vb.memory = "2048"
+      vb.cpus = 2
+      unless File.exist?(swarmm_disk)
+        vb.customize ['createhd', '--filename', swarmm_disk, '--size', 10 * 1024]
+      end
+        vb.customize ['storageattach', :id, '--storagectl', 'IDE', '--port', 1, '--device', 0, '--type', 'hdd', '--medium', swarmm_disk]
+    end
+    swarmm.vm.provision "shell",
+      inline: "sudo echo 192.168.100.104 salt | sudo tee -a /etc/hosts"
+    
+    swarmm.vm.provision :salt do |salt|
+      salt.install_master = true
+      salt.minion_key = "salt-stack/key/swarmm.pem"
+      salt.minion_pub = "salt-stack/key/swarmm.pub"
+      salt.master_key = "salt-stack/key/master.pem"
+      salt.master_pub = "salt-stack/key/master.pub"
+      salt.seed_master ={ "swarmm":"salt-stack/key/swarmm.pub",
+                          "swarmw01": "salt-stack/key/swarmw01.pub",
+                          "swarmw02": "salt-stack/key/swarmw02.pub"  }
+
+      salt.masterless = false      
+    end
+  end
+  
+  config.vm.define :swarmw01 do |swarmw01|
+    swarmw01.vm.network "private_network", ip: "192.168.100.102", virtualbox__intnet: true
+    swarmw01.vm.box = "centos/7"
+    swarmw01.vm.hostname = 'swarmw01'
+    swarmw01.vm.provider "virtualbox" do |vb|
+      vb.memory = "2048"
+      vb.cpus = 2
+      unless File.exist?(swarmw01_disk)
+        vb.customize ['createhd', '--filename', swarmw01_disk, '--size', 10 * 1024]
+      end
+        vb.customize ['storageattach', :id, '--storagectl', 'IDE', '--port', 1, '--device', 0, '--type', 'hdd', '--medium', swarmw01_disk]   
+    end
+    swarmw01.vm.provision "shell",
+      inline: "sudo echo 192.168.100.104 salt | sudo tee -a /etc/hosts"
+
+    swarmw01.vm.provision :salt do |salt|
+      salt.minion_pub = "salt-stack/key/swarmw01.pub"
+      salt.minion_key = "salt-stack/key/swarmw01.pem"
+    end
+  end 
+  
+  config.vm.define :swarmw02 do |swarmw02|
+    swarmw02.vm.network "private_network", ip: "192.168.100.103", virtualbox__intnet: true
+    swarmw02.vm.box = "centos/7"
+    swarmw02.vm.hostname = 'swarmw02'
+    swarmw02.vm.provider "virtualbox" do |vb|
+      vb.memory = "2048"
+      vb.cpus = 2
+      unless File.exist?(swarmw02_disk)
+        vb.customize ['createhd', '--filename', swarmw02_disk, '--size', 10 * 1024]
+      end
+        vb.customize ['storageattach', :id, '--storagectl', 'IDE', '--port', 1, '--device', 0, '--type', 'hdd', '--medium', swarmw02_disk]
+    end
+  
+    swarmw02.vm.provision "shell",
+      inline: "sudo echo 192.168.100.104 salt | sudo tee -a /etc/hosts"
+    
+    swarmw02.vm.provision :salt do |salt|
+      salt.minion_pub = "salt-stack/key/swarmw02.pub"
+      salt.minion_key = "salt-stack/key/swarmw02.pem"
+    end
+  end
+
+end

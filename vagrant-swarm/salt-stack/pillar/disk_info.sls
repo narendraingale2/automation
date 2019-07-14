@@ -1,0 +1,2 @@
+thinpool:
+    disk: '/dev/sdb'

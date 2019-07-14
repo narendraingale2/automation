@@ -1,0 +1,3 @@
+base:
+  '*':
+    - disk_info
